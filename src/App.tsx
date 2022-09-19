@@ -35,7 +35,10 @@ const OnboardingBase = (props: WithFirebaseApiProps) => {
         dispatch(asyncSetUserInfo({
           firebaseApi: props.firebaseApi,
           userId: userId!,
-          userInfo: { username: username },
+          userInfo: {
+            username: username,
+            profilePicHandle: null,
+          },
         }))
       }}
     >SUBMIT</Button>
