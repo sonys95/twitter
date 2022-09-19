@@ -1,4 +1,4 @@
-import { CircularProgress } from '@mui/material';
+import { Box, CircularProgress, Container, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import Header from './components/Header';
 import { WithFirebaseApiProps, withFirebaseApi } from './Firebase';
@@ -8,6 +8,41 @@ import { handleUserChange } from './redux/userSlice';
 
 const isLoadingState = (state: RootState): boolean => {
   return state.user.userId === undefined;
+};
+
+const OnboardingBase = (props: WithFirebaseApiProps) => {
+  return (<></>);
+}
+
+const Onboarding = withFirebaseApi(OnboardingBase);
+
+const Body = () => {
+  const userId = useAppSelector((state: RootState) => state.user.userId);
+  const userInfo = useAppSelector((state: RootState) => state.user.userInfo.value);
+  const userInfoLoadState = useAppSelector((state: RootState) => state.user.userInfo.loadState);
+  if (userId === null) {
+    // logged out user
+    return (<>
+      <Typography>Please Log In</Typography>
+    </>);
+  }
+
+  if (userInfoLoadState === "loading") {
+    return <CircularProgress />;
+  }
+  if (userInfoLoadState === "failed" || userInfo === undefined) {
+    return (<>
+      <Typography>Something failed</Typography>
+    </>);
+  }
+  if (userInfo === null) {
+    return <Onboarding />;
+  }
+  return (
+    <>
+      <Typography>{`Welcome ${userInfo.username}`}</Typography>
+    </>
+  );
 };
 
 const App = (props: WithFirebaseApiProps) => {
@@ -30,6 +65,11 @@ const App = (props: WithFirebaseApiProps) => {
   return (
     <>
       <Header />
+      <Container sx={{ paddingTop: 3 }}>
+        <Box sx={{ margin: "auto" }}>
+          <Body />
+        </Box>
+      </Container>
     </>
   );
 }
