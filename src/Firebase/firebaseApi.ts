@@ -13,6 +13,7 @@ import {
   User
 } from "firebase/auth";
 import { doc, Firestore, getDoc, getFirestore, setDoc } from "firebase/firestore";
+import { FirebaseStorage, getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { UserInfo } from "../types";
 
 export default class FirebaseApi {
@@ -21,6 +22,7 @@ export default class FirebaseApi {
   auth: Auth;
   googleAuthProvider: GoogleAuthProvider;
   firestore: Firestore;
+  storage: FirebaseStorage;
 
   constructor() {
     this.app = initializeApp(firebaseConfig);
@@ -28,6 +30,7 @@ export default class FirebaseApi {
     this.auth = getAuth(this.app);
     this.googleAuthProvider = new GoogleAuthProvider();
     this.firestore = getFirestore(this.app);
+    this.storage = getStorage(this.app);
   }
 
   onAuthStateChanged = (nextOrObserver: NextOrObserver<User>): Unsubscribe => {
@@ -66,4 +69,16 @@ export default class FirebaseApi {
       profilePicHandle: null,
     };
   };
+
+  asyncUploadImage = async (userId: string, file: File): Promise<string> => {
+    const path = userId + '/' + file.name;
+    const storageRef = ref(this.storage, path);
+    const ret = await uploadBytes(storageRef, file);
+    return ret.ref.fullPath;
+  };
+
+  asyncGetURLFromHandle = async (handle: string): Promise<string> => {
+    const url = await getDownloadURL(ref(this.storage, handle));
+    return url;
+  }
 };
