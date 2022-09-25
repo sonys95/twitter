@@ -1,7 +1,7 @@
 import { Box, CircularProgress, Container, Stack, TextField, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import Header from './components/Header';
-import Onboarding from './components/Header';
+import Onboarding from './components/Onboarding';
 import EditProfile from './components/EditProfile';
 import { WithFirebaseApiProps, withFirebaseApi } from './Firebase';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
